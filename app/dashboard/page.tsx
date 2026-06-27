@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { Cpu, Send, Zap, LogOut, Bot, User } from "lucide-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useAuthFetch } from "@/app/hooks/useAuthFetch";
@@ -28,7 +27,6 @@ const STARTERS = [
 export default function UserDashboardPage() {
   const { user, accessToken, logout } = useAuth();
   const authFetch = useAuthFetch();
-  const router = useRouter();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -57,11 +55,6 @@ export default function UserDashboardPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  const handleLogout = async () => {
-    await logout();
-    router.push("/login");
-  };
 
   const sendMessage = async (prompt?: string) => {
     const text = (prompt ?? input).trim();
@@ -187,7 +180,7 @@ export default function UserDashboardPage() {
         <div className="flex items-center gap-4">
           <span className="text-xs text-slate-400">{user?.email}</span>
           <button
-            onClick={() => void handleLogout()}
+            onClick={() => void logout()}
             className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-slate-300 transition-colors hover:border-slate-600 hover:text-white"
           >
             <LogOut className="h-3.5 w-3.5" />

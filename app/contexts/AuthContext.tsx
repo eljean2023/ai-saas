@@ -8,6 +8,7 @@ import {
   useCallback,
   ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 
 type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
 
@@ -60,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   const refresh = useCallback(async (): Promise<boolean> => {
     try {
@@ -122,7 +124,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
     setUser(null);
     setAccessToken(null);
-  }, []);
+    router.refresh();
+    router.push("/");
+  }, [router]);
 
   const value: AuthContextValue = {
     user,
