@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(USER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+
+  sessions Session[]
+  posts    BlogPost[]
+  aiLogs   AILog[]
+
+  @@index([email])
+  @@index([role, status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  isValid      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@index([expiresAt, isValid])
+  @@map("sessions")
+}
+
+model BlogPost {
+  id        String     @id @default(cuid())
+  title     String
+  slug      String     @unique
+  content   String     @db.Text
+  status    PostStatus @default(DRAFT)
+  authorId  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
+  @@index([status])
+  @@index([slug])
+  @@map("blog_posts")
+}
+
+model AILog {
+  id         String   @id @default(cuid())
+  userId     String
+  prompt     String   @db.Text
+  response   String   @db.Text
+  tokensUsed Int
+  endpoint   String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([endpoint])
+  @@index([createdAt])
+  @@map("ai_logs")
+}
+
+model SystemMetric {
+  id          String   @id @default(cuid())
+  cpuUsage    Float
+  memoryUsage Float
+  activeUsers Int
+  recordedAt  DateTime @default(now())
+
+  @@index([recordedAt])
+  @@map("system_metrics")
+}
