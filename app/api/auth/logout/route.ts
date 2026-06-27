@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UserService } from "@/app/services/UserService";
-import { getRefreshTokenFromRequest, clearRefreshTokenCookie } from "@/lib/cookies";
+import { getRefreshTokenFromRequest, clearRefreshTokenCookie, clearUserRoleCookie } from "@/lib/cookies";
 import { toApiError } from "@/lib/errors";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -13,6 +13,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const response = NextResponse.json({ success: true }, { status: 200 });
     clearRefreshTokenCookie(response);
+    clearUserRoleCookie(response);
 
     return response;
   } catch (error) {

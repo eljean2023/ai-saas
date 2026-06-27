@@ -6,24 +6,29 @@ import { AuthProvider, useAuth } from "@/app/contexts/AuthContext";
 import { Sidebar } from "@/app/components/admin/Sidebar";
 
 function AdminGuard({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/");
+    if (isLoading) return;
+    if (!isAuthenticated) {
+      router.replace("/login");
+      return;
     }
-  }, [isAuthenticated, isLoading, router]);
+    if (!isAdmin) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, isAdmin, isLoading, router]);
 
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
-        <span className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-teal-600" />
+        <span className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-emerald-600" />
       </div>
     );
   }
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated || !isAdmin) return null;
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">

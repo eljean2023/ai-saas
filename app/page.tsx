@@ -1,126 +1,129 @@
-"use client";
+import Link from "next/link";
+import { Cpu, Zap, Shield, BarChart3, ArrowRight, CheckCircle } from "lucide-react";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { Cpu, LogIn } from "lucide-react";
-
-interface LoginResponse {
-  accessToken: string;
-  user: { id: string; email: string; role: string };
-}
-
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const body = (await res.json()) as { error: string };
-        throw new Error(body.error ?? "Login failed");
-      }
-
-      const data = (await res.json()) as LoginResponse;
-      sessionStorage.setItem("access_token", data.accessToken);
-      router.push("/admin/dashboard");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center gap-3">
+    <div className="min-h-screen bg-slate-950 text-white">
+      {/* Sticky nav */}
+      <header className="sticky top-0 z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <Cpu className="h-8 w-8 text-emerald-400" />
-            <span className="text-xl font-bold text-white tracking-tight">
-              AI SaaS{" "}
-              <span className="text-emerald-400">Platform</span>
+            <Cpu className="h-6 w-6 text-emerald-400" />
+            <span className="text-lg font-bold tracking-tight">
+              AI<span className="text-emerald-400">SaaS</span>
             </span>
           </div>
-          <p className="text-sm text-slate-500">Sign in to your account</p>
+          <Link
+            href="/login"
+            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-500"
+          >
+            Sign In
+          </Link>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="mx-auto max-w-6xl px-6 pb-20 pt-24 text-center">
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-medium text-emerald-400">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+          Production-Ready SaaS Infrastructure
         </div>
 
-        <form
-          onSubmit={(e) => void handleSubmit(e)}
-          className="rounded-2xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl shadow-black/40 backdrop-blur-sm ring-1 ring-emerald-500/5"
-        >
-          <div className="space-y-5">
-            <div className="space-y-1.5">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-slate-300"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
-                placeholder="you@example.com"
-              />
-            </div>
+        <h1 className="mb-6 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
+          Build AI Products{" "}
+          <span className="text-emerald-400">10x Faster</span>
+        </h1>
 
-            <div className="space-y-1.5">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-slate-300"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
-                placeholder="••••••••"
-              />
-            </div>
+        <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-400">
+          Production-grade SaaS boilerplate with real-time streaming AI, JWT RBAC
+          authentication, and a full admin operations panel — ready to ship today.
+        </p>
 
-            {error && (
-              <p className="rounded-lg border border-red-800 bg-red-900/20 px-3 py-2 text-xs text-red-400">
-                {error}
-              </p>
-            )}
+        <div className="flex items-center justify-center gap-4">
+          <Link
+            href="/login"
+            className="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-900/40 transition-colors hover:bg-emerald-500"
+          >
+            Get Started Free
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/login"
+            className="rounded-xl border border-slate-700 bg-slate-900 px-6 py-3 font-semibold text-slate-300 transition-colors hover:border-slate-600 hover:text-white"
+          >
+            View Demo
+          </Link>
+        </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+        <p className="mt-5 text-xs text-slate-600">
+          Demo: admin@test.com / Admin1234! &nbsp;·&nbsp; user@test.com / User1234!
+        </p>
+      </section>
+
+      {/* Feature cards */}
+      <section className="mx-auto max-w-6xl px-6 pb-24">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              icon: Zap,
+              title: "Streaming AI Engine",
+              desc: "Real-time SSE streaming with the OrchestratorAgent, RAG context injection, and per-user token metering baked in.",
+              accent: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+            },
+            {
+              icon: Shield,
+              title: "RBAC Authentication",
+              desc: "JWT + refresh token rotation with three role tiers (USER, ADMIN, SUPER_ADMIN) enforced at both middleware and API layers.",
+              accent: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+            },
+            {
+              icon: BarChart3,
+              title: "Admin Operations Panel",
+              desc: "Full telemetry dashboard — live user management, content CMS, AI request audit stream, and analytics trends.",
+              accent: "text-sky-400 bg-sky-400/10 border-sky-400/20",
+            },
+          ].map(({ icon: Icon, title, desc, accent }) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 transition-colors hover:border-slate-700"
             >
-              {loading ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              ) : (
-                <LogIn className="h-4 w-4" />
-              )}
-              {loading ? "Signing in…" : "Sign In"}
-            </button>
+              <div className={`mb-4 inline-flex rounded-xl border p-2.5 ${accent}`}>
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-base font-semibold text-white">{title}</h3>
+              <p className="text-sm leading-relaxed text-slate-400">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Trust strip */}
+      <section className="border-t border-slate-800 bg-slate-900/40">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-14 sm:grid-cols-4">
+          {[
+            "PostgreSQL + Prisma ORM",
+            "HttpOnly cookie sessions",
+            "Soft delete & audit trails",
+            "Neon serverless database",
+          ].map((item) => (
+            <div key={item} className="flex items-center gap-3">
+              <CheckCircle className="h-4 w-4 shrink-0 text-emerald-500" />
+              <span className="text-sm text-slate-300">{item}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800 py-8">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
+          <div className="flex items-center gap-2">
+            <Cpu className="h-4 w-4 text-emerald-400" />
+            <span className="text-sm text-slate-500">AI SaaS Platform</span>
           </div>
-        </form>
-      </div>
+          <p className="text-xs text-slate-600">© 2026 All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

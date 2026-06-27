@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UserService } from "@/app/services/UserService";
-import { getRefreshTokenFromRequest, setRefreshTokenCookie } from "@/lib/cookies";
+import { getRefreshTokenFromRequest, setRefreshTokenCookie, setUserRoleCookie } from "@/lib/cookies";
 import { toApiError } from "@/lib/errors";
+
+function extractRoleFromJwt(token: string): string | null {
+  try {
+    const [, payload] = token.split(".");
+    const padded = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const json = Buffer.from(padded, "base64").toString("utf8");
+    return (JSON.parse(json) as { role?: string }).role ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -22,6 +33,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
 
     setRefreshTokenCookie(response, tokens.refreshToken, tokens.expiresAt);
+
+    const role = extractRoleFromJwt(tokens.accessToken);
+    if (role) {
+      setUserRoleCookie(response, role, tokens.expiresAt);
+    }
 
     return response;
   } catch (error) {

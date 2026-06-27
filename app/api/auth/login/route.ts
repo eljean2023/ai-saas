@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { UserService } from "@/app/services/UserService";
-import { setRefreshTokenCookie } from "@/lib/cookies";
+import { setRefreshTokenCookie, setUserRoleCookie } from "@/lib/cookies";
 import { toApiError } from "@/lib/errors";
 
 const loginSchema = z.object({
@@ -30,6 +30,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
 
     setRefreshTokenCookie(response, tokens.refreshToken, tokens.expiresAt);
+    setUserRoleCookie(response, user.role, tokens.expiresAt);
 
     return response;
   } catch (error) {
