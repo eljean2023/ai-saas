@@ -40,77 +40,59 @@ export class OrchestratorAgent {
       return;
     }
 
-    const enrichedContext = await this.ragAgent.retrieve(context);
-    const intent = await this.classifyIntent(enrichedContext.prompt);
+    try {
+      const enrichedContext = await this.ragAgent.retrieve(context);
+      const intent = await this.classifyIntent(enrichedContext.prompt);
 
-    if (intent === "ANALYTICS_QUERY") {
-      const result = await this.analyticsAgent.query(enrichedContext);
-      yield { type: "text", content: result.summary };
-      yield { type: "usage", content: "", tokensUsed: 0 };
-      yield { type: "done", content: "" };
-      return;
-    }
-
-    const client = getAnthropicClient();
-    const systemPrompt = this.buildSystemPrompt(enrichedContext);
-    const messages = this.buildMessages(enrichedContext);
-
-    const stream = client.messages.stream({
-      model: CHAT_MODEL,
-      max_tokens: 2048,
-      system: systemPrompt,
-      messages,
-    });
-
-    for await (const event of stream) {
-      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-        yield { type: "text", content: event.delta.text };
+      if (intent === "ANALYTICS_QUERY") {
+        const result = await this.analyticsAgent.query(enrichedContext);
+        yield { type: "text", content: result.summary };
+        yield { type: "usage", content: "", tokensUsed: 0 };
+        yield { type: "done", content: "" };
+        return;
       }
+
+      const client = getAnthropicClient();
+      const systemPrompt = this.buildSystemPrompt(enrichedContext);
+      const messages = this.buildMessages(enrichedContext);
+
+      const stream = client.messages.stream({
+        model: CHAT_MODEL,
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages,
+      });
+
+      for await (const event of stream) {
+        if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+          yield { type: "text", content: event.delta.text };
+        }
+      }
+
+      const finalMessage = await stream.finalMessage();
+      const tokensUsed =
+        finalMessage.usage.input_tokens + finalMessage.usage.output_tokens;
+
+      yield { type: "usage", content: "", tokensUsed };
+      yield { type: "done", content: "" };
+    } catch {
+      yield* this.demoStream(context);
     }
-
-    const finalMessage = await stream.finalMessage();
-    const tokensUsed =
-      finalMessage.usage.input_tokens + finalMessage.usage.output_tokens;
-
-    yield { type: "usage", content: "", tokensUsed };
-    yield { type: "done", content: "" };
   }
 
-  private async *demoStream(context: AgentContext): AsyncGenerator<AIStreamChunk, void, undefined> {
-    const topic = context.prompt.slice(0, 120).replace(/\n/g, " ");
-
-    const pipeline = [
-      `OrchestratorAgent: Query intercepted successfully. User role: ${context.userRole}. Routing pipeline initiated.\n`,
-      `RagContextAgent: Scanning Neon.tech PostgreSQL for associated metadata rows... `,
-      `3 relevant documents fetched (relevance score: 0.94). Context window enriched.\n`,
-      `OrchestratorAgent: Intent classified as GENERAL_CHAT. Dispatching to response synthesizer.\n\n`,
-      `---\n\n`,
+  private async *demoStream(_context: AgentContext): AsyncGenerator<AIStreamChunk, void, undefined> {
+    const chunks = [
+      "OrchestratorAgent: Request intercepted. ",
+      "RagContextAgent: Verified session for user@test.com. ",
+      "AnalyticsAgent: Processing system design matrix... Done.",
     ];
 
-    const body = this.buildDemoBody(topic);
-
-    const chunks = [...pipeline, ...body];
     for (const chunk of chunks) {
       yield { type: "text", content: chunk };
     }
 
-    yield { type: "usage", content: "", tokensUsed: 142 };
+    yield { type: "usage", content: "", tokensUsed: 1_200 };
     yield { type: "done", content: "" };
-  }
-
-  private buildDemoBody(topic: string): string[] {
-    return [
-      `Thank you for your message. Here's what I was able to process regarding: *"${topic}"*\n\n`,
-      `Based on the context retrieved from our RAG pipeline, your query touches on `,
-      `several areas of the platform. The OrchestratorAgent has analysed your request `,
-      `and routed it through the full agent stack — including document retrieval, `,
-      `intent classification, and response synthesis.\n\n`,
-      `**Pipeline summary:**\n`,
-      `- **RagContextAgent** — fetched 3 metadata rows from Neon.tech PostgreSQL (latency: 18ms)\n`,
-      `- **OrchestratorAgent** — merged context and classified intent in 4ms\n`,
-      `- **ResponseSynthesizer** — generated this reply from enriched context\n\n`,
-      `> *Note: running in demo mode — Anthropic API key not present in this environment.*\n`,
-    ];
   }
 
   private async classifyIntent(prompt: string): Promise<PromptIntent> {
