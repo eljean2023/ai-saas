@@ -209,7 +209,8 @@ export default function UsersPage() {
             key: "actions",
             header: "Actions",
             align: "right",
-            render: (u: UserRow) => (
+            render: (u: UserRow) =>
+              !isSuperAdmin && u.role === "SUPER_ADMIN" ? null : (
               <div className="flex items-center justify-end gap-1.5">
                 {u.id !== currentUser?.id && (
                   <>

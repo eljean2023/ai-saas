@@ -5,6 +5,17 @@ import { UserRepository } from "@/app/repositories/UserRepository";
 import { requireAdmin } from "@/lib/adminAuth";
 import { toApiError, ForbiddenError } from "@/lib/errors";
 
+async function guardAgainstSuperAdminTarget(
+  executorRole: string,
+  targetId: string
+): Promise<void> {
+  if (executorRole !== "ADMIN") return;
+  const target = await UserRepository.findById(targetId);
+  if (target?.role === "SUPER_ADMIN") {
+    throw new ForbiddenError("Admins cannot modify or delete super admins");
+  }
+}
+
 const patchSchema = z.object({
   status: z.enum(["ACTIVE", "BANNED"]).optional(),
   role: z.enum(["USER", "ADMIN", "SUPER_ADMIN"]).optional(),
@@ -16,6 +27,7 @@ export async function PATCH(
 ): Promise<NextResponse> {
   try {
     const admin = requireAdmin(request);
+    await guardAgainstSuperAdminTarget(admin.role, params.id);
     const body: unknown = await request.json();
     const parsed = patchSchema.safeParse(body);
 
@@ -54,6 +66,7 @@ export async function DELETE(
 ): Promise<NextResponse> {
   try {
     const admin = requireAdmin(request);
+    await guardAgainstSuperAdminTarget(admin.role, params.id);
     await UserService.deleteUser(admin.sub, params.id);
     return NextResponse.json({ success: true });
   } catch (error) {
