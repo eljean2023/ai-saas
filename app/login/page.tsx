@@ -73,9 +73,11 @@ export default function LoginPage() {
                 <span>👤</span>
                 <span className="text-emerald-300">Standard Client View</span>
               </p>
-              <p className="font-mono text-[11px] text-slate-400">
+              <p className="font-mono text-[13px] text-slate-400">
+                <span className="text-slate-500">User:</span>{" "}
                 <span className="text-slate-200">user@test.com</span>
-                <span className="mx-1.5 text-slate-600">/</span>
+                <span className="mx-2 text-slate-600">/</span>
+                <span className="text-slate-500">Pass:</span>{" "}
                 <span className="text-slate-200">User1234!</span>
               </p>
               <p className="mt-1 text-[10px] text-slate-500">
@@ -88,9 +90,11 @@ export default function LoginPage() {
                 <span>🔑</span>
                 <span className="text-amber-300">Admin Operation Control</span>
               </p>
-              <p className="font-mono text-[11px] text-slate-400">
+              <p className="font-mono text-[13px] text-slate-400">
+                <span className="text-slate-500">User:</span>{" "}
                 <span className="text-slate-200">admin@test.com</span>
-                <span className="mx-1.5 text-slate-600">/</span>
+                <span className="mx-2 text-slate-600">/</span>
+                <span className="text-slate-500">Pass:</span>{" "}
                 <span className="text-slate-200">Admin1234!</span>
               </p>
               <p className="mt-1 text-[10px] text-slate-500">
@@ -105,6 +109,8 @@ export default function LoginPage() {
               SUPER_ADMIN
             </span>{" "}
             root access tokens, please contact{" "}
+            <span className="font-semibold text-slate-300">Ing Eliace Jean</span>{" "}
+            at{" "}
             <a
               href="mailto:eliacejeanultidev@gmail.com"
               className="text-emerald-400/80 underline underline-offset-2 transition-colors hover:text-emerald-300"
