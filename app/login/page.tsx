@@ -62,9 +62,62 @@ export default function LoginPage() {
           <p className="text-sm text-slate-500">Sign in to your workspace</p>
         </div>
 
+        <div className="rounded-xl border border-emerald-500/30 bg-slate-900/60 p-5 backdrop-blur-md shadow-lg shadow-emerald-950/30 ring-1 ring-emerald-500/10">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-emerald-400/70">
+            Demo / Testing Access Credentials
+          </p>
+
+          <div className="space-y-3">
+            <div className="rounded-lg border border-slate-700/60 bg-slate-800/50 px-3.5 py-2.5">
+              <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-slate-300">
+                <span>👤</span>
+                <span className="text-emerald-300">Standard Client View</span>
+              </p>
+              <p className="font-mono text-[11px] text-slate-400">
+                <span className="text-slate-200">user@test.com</span>
+                <span className="mx-1.5 text-slate-600">/</span>
+                <span className="text-slate-200">User1234!</span>
+              </p>
+              <p className="mt-1 text-[10px] text-slate-500">
+                Highlights dynamic chat &amp; token telemetry
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-700/60 bg-slate-800/50 px-3.5 py-2.5">
+              <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-slate-300">
+                <span>🔑</span>
+                <span className="text-amber-300">Admin Operation Control</span>
+              </p>
+              <p className="font-mono text-[11px] text-slate-400">
+                <span className="text-slate-200">admin@test.com</span>
+                <span className="mx-1.5 text-slate-600">/</span>
+                <span className="text-slate-200">Admin1234!</span>
+              </p>
+              <p className="mt-1 text-[10px] text-slate-500">
+                Highlights RBAC tables &amp; system streams
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-3.5 border-t border-slate-700/50 pt-3 text-[10px] leading-relaxed text-slate-500">
+            To request custom{" "}
+            <span className="font-semibold text-emerald-400/80">
+              SUPER_ADMIN
+            </span>{" "}
+            root access tokens, please contact{" "}
+            <a
+              href="mailto:eliacejeanultidev@gmail.com"
+              className="text-emerald-400/80 underline underline-offset-2 transition-colors hover:text-emerald-300"
+            >
+              eliacejeanultidev@gmail.com
+            </a>
+            .
+          </p>
+        </div>
+
         <form
           onSubmit={(e) => void handleSubmit(e)}
-          className="rounded-2xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl shadow-black/40 backdrop-blur-sm ring-1 ring-emerald-500/5"
+          className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl shadow-black/40 backdrop-blur-sm ring-1 ring-emerald-500/5"
         >
           <div className="space-y-5">
             <div className="space-y-1.5">
@@ -125,59 +178,6 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-
-        <div className="mt-5 rounded-xl border border-emerald-500/30 bg-slate-900/60 p-5 backdrop-blur-md shadow-lg shadow-emerald-950/30 ring-1 ring-emerald-500/10">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-emerald-400/70">
-            Demo / Testing Access Credentials
-          </p>
-
-          <div className="space-y-3">
-            <div className="rounded-lg border border-slate-700/60 bg-slate-800/50 px-3.5 py-2.5">
-              <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-slate-300">
-                <span>👤</span>
-                <span className="text-emerald-300">Standard Client View</span>
-              </p>
-              <p className="font-mono text-[11px] text-slate-400">
-                <span className="text-slate-200">user@test.com</span>
-                <span className="mx-1.5 text-slate-600">/</span>
-                <span className="text-slate-200">User1234!</span>
-              </p>
-              <p className="mt-1 text-[10px] text-slate-500">
-                Highlights dynamic chat &amp; token telemetry
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-slate-700/60 bg-slate-800/50 px-3.5 py-2.5">
-              <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-slate-300">
-                <span>🔑</span>
-                <span className="text-amber-300">Admin Operation Control</span>
-              </p>
-              <p className="font-mono text-[11px] text-slate-400">
-                <span className="text-slate-200">admin@test.com</span>
-                <span className="mx-1.5 text-slate-600">/</span>
-                <span className="text-slate-200">Admin1234!</span>
-              </p>
-              <p className="mt-1 text-[10px] text-slate-500">
-                Highlights RBAC tables &amp; system streams
-              </p>
-            </div>
-          </div>
-
-          <p className="mt-3.5 border-t border-slate-700/50 pt-3 text-[10px] leading-relaxed text-slate-500">
-            To request custom{" "}
-            <span className="font-semibold text-emerald-400/80">
-              SUPER_ADMIN
-            </span>{" "}
-            root access tokens, please contact{" "}
-            <a
-              href="mailto:eliacejeanultidev@gmail.com"
-              className="text-emerald-400/80 underline underline-offset-2 transition-colors hover:text-emerald-300"
-            >
-              eliacejeanultidev@gmail.com
-            </a>
-            .
-          </p>
-        </div>
 
         <p className="mt-4 text-center text-xs text-slate-600">
           <Link href="/" className="transition-colors hover:text-slate-400">
